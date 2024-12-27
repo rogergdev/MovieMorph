@@ -1,5 +1,4 @@
-
-![MovieMorph](https://github.com/user-attachments/assets/f868bebf-e716-4a43-a9b0-0c88688e81b7)
+![MovieMorph](https://github.com/user-attachments/assets/682da312-ea00-40e9-85bd-c17cb0f7bb1a)
 
 # MovieMorph
 
