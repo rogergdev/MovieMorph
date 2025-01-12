@@ -2,23 +2,23 @@
 
 # MovieMorph
 
-**MovieMorph** es un sistema de postprocesado automático para películas descargadas en Windows.  
-Puede integrarse con **JDownloader** (Event Scripter) o ejecutarse manualmente.
+**MovieMorph** es un sistema de gestión y organización de bibliotecas de películas en windows.  
+Se integra con el **JDownloader** (Event Scripter) o puede ejecutarse manualmente.
 
 ## Características
 
-- **Renombra** los archivos con el nombre de la carpeta.
+- **Renombra** los archivos con el nombre de la carpeta madre.
 - **Admite** extensiones `.mkv`, `.mp4`, `.avi`.
 - **Verifica** que ocupen al menos **300 MB**.
 - **Mueve** el archivo a `Z:\Peliculas` (personalizable).
-- **Sobrescribe** si ya existe un archivo con el mismo nombre en destino.
+- **Sobrescribe** si ya existe un archivo con el mismo nombre en el destino.
 - **Elimina** la carpeta de la película si se procesa correctamente.
 - **Registra** acciones en un log (`MovieMorph.log`) dentro de la carpeta `Movies`.
 
 ## Requisitos
 
 - **Python 3** instalado en Windows y accesible como `python` en el path.
-- (Opcional) Puedes instalar librerías como **`colorama`** y **`tqdm`** si quieres usar barras de progreso y colores (no incluidas por defecto).
+- (Opcional) Puedes instalar librerías como **`colorama`** y **`tqdm`** si quieres usar barras de progreso y colores (no incluidas por defecto) en su versión manual.
 
 ## Instalación
 
