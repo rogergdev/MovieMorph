@@ -1,85 +1,133 @@
 ![MovieMorph](https://github.com/user-attachments/assets/682da312-ea00-40e9-85bd-c17cb0f7bb1a)
 
-# MovieMorph
+# MovieMorph agente renombrador y gestor de directorios
 
-**MovieMorph** es un sistema de gestión y organización de bibliotecas de películas en windows.  
-Se integra con el **JDownloader** (Event Scripter) o puede ejecutarse manualmente.
+**MovieMorph** es un script bash diseñado para organizar automáticamente archivos de vídeo descargados. Su objetivo principal es mover archivos de vídeo desde subcarpetas a la carpeta principal, eliminar archivos residuales y subcarpetas vacías, dejando la carpeta limpia y organizada.
 
-## Características
+---
 
-- **Renombra** los archivos con el nombre de la carpeta madre.
-- **Admite** extensiones `.mkv`, `.mp4`, `.avi`.
-- **Verifica** que ocupen al menos **300 MB**.
-- **Mueve** el archivo a `Z:\Peliculas` (personalizable).
-- **Sobrescribe** si ya existe un archivo con el mismo nombre en el destino.
-- **Elimina** la carpeta de la película si se procesa correctamente.
-- **Registra** acciones en un log (`MovieMorph.log`) dentro de la carpeta `Movies`.
+## **Características**
 
-## Requisitos
+1. **Procesamiento Automático:**
+   - Recorre todas las subcarpetas para buscar archivos de vídeo.
+   - Mueve los archivos a la carpeta principal.
 
-- **Python 3** instalado en Windows y accesible como `python` en el path.
-- (Opcional) Puedes instalar librerías como **`colorama`** y **`tqdm`** si quieres usar barras de progreso y colores (no incluidas por defecto) en su versión manual.
+2. **Limpieza de Residuos:**
+   - Elimina archivos no deseados como `.rar`, `.zip`, `.txt`, etc.
+   - Borra subcarpetas vacías después de procesar los archivos.
 
-## Instalación
+3. **Compatibilidad con JDownloader:**
+   - Puede configurarse para ejecutarse automáticamente al finalizar una descarga.
 
-1. Clona el repositorio o descarga el código fuente.
-2. Crea una carpeta para los scripts, por ejemplo, `C:\scripts\MovieMorph`.
-3. Pon los archivos `MovieMorph.py` y `MovieMorph_run_all.cmd` en esa carpeta.
-4. Instala y agrega Python al path de tu sistema si no lo tienes instalado.
+4. **Registro de Operaciones:**
+   - Genera un log detallado en `/mnt/eter/FilePhantom/MovieMorph.log` con las acciones realizadas.
 
-## Uso
+---
 
-### Postprocesado manual
-Ejecuta el siguiente comando en la terminal:
-```cmd
-python "C:\scripts\MovieMorph\MovieMorph.py" "%USERPROFILE%\Downloads\Movies\CarpetaDePelicula\archivo.mkv"
-```
+## **Requisitos del Sistema**
 
-### Postprocesado masivo
-Ejecuta el script `MovieMorph_run_all.cmd` para procesar todos los archivos en `Downloads\Movies`:
-```cmd
-C:\scripts\MovieMorph_run_all.cmd
-```
+- **Sistema Operativo:** Linux
+- **Dependencias:**
+  - Bash
+  - Comando `find`
 
-### Integración con JDownloader (Event Scripter)
+---
 
-1. Abre **JDownloader** > **Ajustes** > **Extensiones** > **Event Scripter**.
-2. Crea un **nuevo script** (JavaScript) con el **Trigger** “Extractor de Archivos Finalizado”:
-   ```javascript
-   if (archive) {
-       var extractedFiles = archive.getExtractedFiles();
-       if (extractedFiles && extractedFiles.length > 0) {
-           var filePath = extractedFiles[0];
-           var pyScript = "C:\\scripts\\MovieMorph\\MovieMorph.py";
-           callSync("python.exe", pyScript, filePath);
-       }
-   }
+## **Instalación**
+
+1. **Clona este repositorio:**
+   ```bash
+   git clone https://github.com/tuusuario/MovieMorph.git
    ```
 
-Este script llamará automáticamente a `MovieMorph.py` cada vez que se extraiga un archivo en JDownloader.
+2. **Copia el script a la ubicación deseada:**
+   ```bash
+   cp MovieMorph.sh /mnt/eter/FilePhantom/
+   ```
 
-## Configuración personalizada
+3. **Da permisos de ejecución al script:**
+   ```bash
+   chmod +x /mnt/eter/FilePhantom/MovieMorph.sh
+   ```
 
-Puedes personalizar las rutas en `MovieMorph.py`:
+4. **Crea el archivo de log:**
+   ```bash
+   touch /mnt/eter/FilePhantom/MovieMorph.log
+   chmod 666 /mnt/eter/FilePhantom/MovieMorph.log
+   ```
 
-- **Carpeta de destino**:
-  Cambia la variable `DESTINO` para mover las películas a otra ruta.
-  ```python
-  DESTINO = r"D:\PeliculasOrganizadas"
-  ```
+---
 
-- **Tamaño mínimo**:
-  Modifica `TAMANIO_MINIMO` para aceptar archivos de menor o mayor tamaño (en bytes).
-  ```python
-  TAMANIO_MINIMO = 500 * 1024 * 1024  # 500 MB
-  ```
+## **Uso Manual**
 
-- **Extensiones permitidas**:
-  Agrega más extensiones a `EXTENSIONES_OK`.
-  ```python
-  EXTENSIONES_OK = [".mkv", ".mp4", ".avi", ".mov"]
-  ```
+Ejecuta el script con la carpeta que deseas procesar como argumento:
 
+```bash
+/mnt/eter/FilePhantom/MovieMorph.sh "/ruta/a/la/carpeta"
+```
+
+### **Ejemplo:**
+
+```bash
+/mnt/eter/FilePhantom/MovieMorph.sh "/mnt/eter/peliculasanimacion/El señor de los anillos; La guerra de los Rohirrim (2024)"
+```
+
+---
+
+## **Integración con JDownloader**
+
+### **Configuración del EventScripter**
+
+1. Abre **JDownloader**.
+2. Ve a **Ajustes** > **Extensiones** > **EventScripter**.
+3. Haz clic en **Configurar**.
+4. Crea un nuevo evento:
+   - **Nombre del Evento:** `Ejecutar MovieMorph`
+   - **Trigger (Disparador):** `Un archivo/carpeta ha terminado de descargarse`.
+5. Usa el siguiente script:
+
+```javascript
+// Ejecuta MovieMorph.sh después de finalizar una descarga
+
+// Ruta del script
+var scriptPath = "/mnt/eter/FilePhantom/MovieMorph.sh";
+
+// Ruta de la carpeta donde se guardó la descarga
+var path = package.getDownloadFolder();
+
+// Ejecutar el script en bash
+if (isLinux()) {
+    callAsync(function(exitCode) {
+        if (exitCode === 0) {
+            log("Script ejecutado correctamente: " + scriptPath);
+        } else {
+            log("Error ejecutando el script: " + scriptPath);
+        }
+    }, "/bin/bash", scriptPath, path);
+} else {
+    log("Este script solo funciona en sistemas Linux.");
+}
+```
+
+### **Verificación de Integración**
+1. Descarga algo en JDownloader.
+2. Verifica los logs de JDownloader para asegurarte de que el script se ejecutó correctamente.
+3. Confirma que los archivos se organizaron en las carpetas correspondientes.
+
+---
+
+## **Estructura del Log**
+
+El archivo `/mnt/eter/FilePhantom/MovieMorph.log` contiene un registro detallado de las acciones realizadas. Ejemplo:
+
+```
+[2025-01-20 12:00:00] [PROCESANDO] Subcarpeta: /mnt/eter/peliculasanimacion/El señor de los anillos; La guerra de los Rohirrim (2024)/050125_11
+[2025-01-20 12:00:01] [OK] Archivo movido: '/mnt/eter/peliculasanimacion/El señor de los anillos; La guerra de los Rohirrim (2024)/050125_11/El Señor De Los Anillos.mkv' -> '/mnt/eter/peliculasanimacion/El señor de los anillos; La guerra de los Rohirrim (2024)/El Señor De Los Anillos.mkv'
+[2025-01-20 12:00:02] [LIMPIEZA] Archivos residuales eliminados: *.rar en /mnt/eter/peliculasanimacion/El señor de los anillos; La guerra de los Rohirrim (2024)
+[2025-01-20 12:00:03] [COMPLETADO] Procesamiento finalizado para '/mnt/eter/peliculasanimacion/El señor de los anillos; La guerra de los Rohirrim (2024)'.
+```
+
+---
 ## Licencia
 
 Este proyecto usa la [Licencia Apache 2.0](LICENSE).
